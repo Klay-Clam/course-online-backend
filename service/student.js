@@ -20,11 +20,13 @@ async function selectMessage(request) {
     })
 }
 async function getStudentList(classId,teacherId) {
-    let sql = `SELECT s.Id,s.Name,s.StudentNo,
+    let sql = `SELECT s.Id,s.Name,s.StudentNo,ImgLocation,
     (SELECT COUNT(TaskStatus) from task WHERE TaskStatus!=0 and StudentId=s.Id and TeacherId=${teacherId})as comCount
     FROM student as s
     LEFT JOIN task as t on t.StudentId=s.Id
-    where s.ClassId=${classId}`;
+    where s.ClassId=${classId}
+    GROUP BY Name
+    `;
     return mysql.createConnection(DBConfig).then(conn => {
         var result = conn.query(sql);
         conn.end();
